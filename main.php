@@ -2,7 +2,7 @@
 /*
 Plugin Name: Prev_Next_Posts
 Description: Custom plugin to provide an endpoint for retrieving previous and next posts' information.
-Version: 0.1
+Version: 0.2
 Author: Tam Jid
 Author URI: https://github.com/tee-jaay
 */
@@ -16,8 +16,7 @@ function custom_get_prev_next_posts($request) {
         return new WP_Error('no_post', 'Invalid post', array('status' => 404));
     }
 
-    // Get current post's categories
-    $categories = wp_get_post_categories($post_id);
+    // Current post date
     $current_post_date = $post->post_date;
 
     // Arguments for previous post
@@ -25,7 +24,6 @@ function custom_get_prev_next_posts($request) {
         'posts_per_page' => 1,
         'orderby' => 'date',
         'order' => 'DESC',
-        'category__in' => $categories,
         'date_query' => array(
             array(
                 'before' => $current_post_date
@@ -39,7 +37,6 @@ function custom_get_prev_next_posts($request) {
         'posts_per_page' => 1,
         'orderby' => 'date',
         'order' => 'ASC',
-        'category__in' => $categories,
         'date_query' => array(
             array(
                 'after' => $current_post_date
@@ -62,16 +59,14 @@ function custom_get_prev_next_posts($request) {
     if ($prev_post) {
         $prev_post_data = array(
             'title' => $prev_post->post_title,
-            'slug' => $prev_post->post_name,
-            'categories' => wp_get_post_categories($prev_post->ID),
+            'slug' => $prev_post->post_name,            
         );
     }
 
     if ($next_post) {
         $next_post_data = array(
             'title' => $next_post->post_title,
-            'slug' => $next_post->post_name,
-            'categories' => wp_get_post_categories($next_post->ID),
+            'slug' => $next_post->post_name,            
         );
     }
 
